@@ -1,0 +1,63 @@
+<?php
+session_start();
+require('dbconnect.php');
+$_SESSION['subject']="OS";
+
+?>
+<?php
+echo('<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title> ISE Library-');
+    echo($_SESSION['username']);
+
+     echo('</title>
+    <link rel="icon" href="images/labicon.jpg">
+    <link rel="stylesheet" href="list.css">
+  </head>
+  <body>');
+?>
+<h1>Operating system</h1>
+<div class="list">
+<ol>
+ <?php
+ $sql="SELECT * FROM `books` where subject='os'";
+$result=mysqli_query($conn,$sql);
+if($result)
+{
+  $count=mysqli_num_rows($result);
+  if($count==0)
+  {
+  echo("NO BOOKS AT PRESENT");
+}
+  else {
+    $x=0;
+    echo('<form class="" action="process.php" method="post"><ol>');
+    while($x<$count)
+    {
+      $row=mysqli_fetch_assoc($result);
+      $Count=$row['count'];
+      $id=$row['ide'];
+  if($Count>0)
+  {
+      echo('<li><input type="checkbox" name="books[]" value="'.$row['bookname'].'">'.$row['bookname']);
+    //   echo($row['bookname']);
+       echo('</li>');
+    }
+    else {
+      $sql="DELETE FROM books WHERE ide='$id' ";
+      $result=mysqli_query($conn,$sql);
+    }
+      $x++;
+  }
+  echo('
+     </ol>
+     </div>
+     <input type="submit" class="update" name="save_multiple" value="Update"/>
+     <input type="reset" class="reset" value="Reset"/>
+    </body>
+  </html>');
+}
+}
+ ?>
